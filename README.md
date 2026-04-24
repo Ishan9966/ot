@@ -65,6 +65,10 @@ disp(T(end,end));
 clc;
 clear;
 
+% Min Z = 8x11 + 6x12 + 10x13 + 9x21 + 7x22 + 4x23
+% Supply: S1 = 20, S2 = 30
+% Demand: D1 = 10, D2 = 25, D3 = 15
+
 % Cost matrix
 C = [8 6 10;
      9 7 4];
@@ -118,6 +122,11 @@ disp(total_cost);
 ```matlab
 clc;
 clear;
+
+% Min Z = 2x1 + 3x2
+% x1 + x2 >= 4
+% x1 + 2x2 = 6
+% x1, x2 >= 0
 
 M = 1000;
 
@@ -193,6 +202,10 @@ disp(T(end,end));
 ```matlab
 clc;
 clear;
+
+% Min f(x1, x2) = x1^2 + x2^2 + x1*x2
+% Starting point: x0 = (2, 2)
+% Learning rate alpha = 0.1
 
 x = [2; 2];
 alpha = 0.1;
