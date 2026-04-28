@@ -131,16 +131,25 @@ clear;
 M = 1000;
 
 % Tableau: x1 x2 s1 a1 a2 | RHS
+% Columns: [decision vars | surplus/slack vars | artificial vars | RHS]
 T = [1 1 -1 1 0 4;
      1 2  0 0 1 6;
     -2 -3  0 -M -M 0];
 
+% art_cols: column indices of artificial variables in T
+% Change this to match your tableau (e.g. [4] if only one artificial var,
+% or [5 6] if artificials are in columns 5 and 6, etc.)
+art_cols = [4, 5];
+
 [m, n] = size(T);
 
-% Fix objective row
-for i = 1:m-1
-    if T(i,4) == 1 || T(i,5) == 1
-        T(end,:) = T(end,:) + M * T(i,:);
+% Fix objective row: for each constraint row whose basic variable is an
+% artificial, add M * that row to eliminate the artificial from the objective
+for k = 1:length(art_cols)
+    for i = 1:m-1
+        if T(i, art_cols(k)) == 1
+            T(end,:) = T(end,:) + M * T(i,:);
+        end
     end
 end
 
@@ -207,16 +216,21 @@ clear;
 % Starting point: x0 = (2, 2)
 % Learning rate alpha = 0.1
 
-x = [2; 2];
-alpha = 0.1;
+% Define the objective function and its gradient as function handles.
+% Change f and grad_f to solve a different problem.
+f      = @(x) x(1)^2 + x(2)^2 + x(1)*x(2);
+grad_f = @(x) [2*x(1) + x(2);
+               2*x(2) + x(1)];
+
+x = [2; 2];       % starting point (change as needed)
+alpha = 0.1;      % learning rate
 tol = 1e-5;
 max_iter = 1000;
 
 for k = 1:max_iter
 
     % Gradient
-    grad = [2*x(1) + x(2);
-            2*x(2) + x(1)];
+    grad = grad_f(x);
 
     % Update
     x_new = x - alpha * grad;
@@ -231,8 +245,6 @@ end
 disp('Optimal point:');
 disp(x);
 
-fval = x(1)^2 + x(2)^2 + x(1)*x(2);
-
 disp('Minimum value:');
-disp(fval);
+disp(f(x));
 ```
